@@ -8,6 +8,7 @@ from data_manager import DataManager
 from bot.bot import ChatBot
 import platforms
 import os
+# -*- coding: utf-8 -*-
 class VkBot(ChatBot):
     Platform = platforms.Platform.vkontakte
     def __init__(self, loop, handler):
