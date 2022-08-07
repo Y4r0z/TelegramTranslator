@@ -122,3 +122,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+api_data.py
+
+structs/
+
+.vscode/
+
+sessions/
