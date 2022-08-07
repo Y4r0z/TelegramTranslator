@@ -74,7 +74,7 @@ class MessageHandler:
     async  def _vk_add(self, message):
         peer = message.peer_id
         if not self.data.vk_findById(peer):
-            chat = await VkChat.FromId(self.vk, peer)
+            chat = await VkChat.FromId(self.vk.bot, peer)
             self.data.vkChats.append(chat)
             await message.reply(f"Ваш локальный ID - {peer}, вы были подписаны на бота.")
         else:
