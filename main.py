@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from application import Application
 import sys
 import logging
