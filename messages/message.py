@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from messages.media import Media, MediaType
 from datetime import datetime as dt
 class Message:

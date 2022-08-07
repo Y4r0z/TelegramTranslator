@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from telethon import TelegramClient, events, utils
 from api_data import tg_api_id, tg_api_hash, tg_chats
 from data_manager import DataManager

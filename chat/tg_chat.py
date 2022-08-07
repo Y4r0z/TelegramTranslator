@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from telethon import utils
 from chat.chat import Chat
 import platforms

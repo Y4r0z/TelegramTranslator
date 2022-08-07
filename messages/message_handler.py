@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from data_manager import DataManager
 from bot.vk_bot import VkBot
 from bot.tg_bot import TelegramBot

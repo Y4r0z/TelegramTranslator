@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import platforms
 class Chat:
     Platform = platforms.Platform.none

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from vkbottle import API
 from chat.chat import Chat
 from data_manager import DataManager

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from data_manager import DataManager
 from messages.media import Media, MediaType
 import json

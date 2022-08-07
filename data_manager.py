@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from telethon import TelegramClient, utils
 class DataManager:
     __instance = None
