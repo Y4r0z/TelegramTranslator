@@ -8,7 +8,7 @@ def main():
     logger = logging.getLogger('vkbottle')
     logger.propagate = False
     app = Application()
-    app.exec()
+    app.run()
     sys.exit()
 
 

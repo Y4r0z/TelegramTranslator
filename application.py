@@ -12,7 +12,7 @@ class Application:
         print('Программа запущена')
         self.loop.create_task(self.vk.bot.run_polling())
     
-    def exec(self):
+    def run(self):
         self.loop.run_forever()
         print('Конец')
 
