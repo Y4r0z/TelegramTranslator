@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from bot.tg_bot import TelegramBot
 from bot.vk_bot import VkBot
 from messages.message_handler import MessageHandler
