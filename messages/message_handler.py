@@ -9,6 +9,7 @@ from messages.message import Message
 from messages.media import Media, MediaType
 from file_manager import FileManager
 import typing
+import os
 class MessageHandler:
     def __init__(self):
         self.bots = []
@@ -53,6 +54,8 @@ class MessageHandler:
                 await self.vk.sendMessage(message, i.id)
                 print(' =>', end='')
         print('')
+        if message.media:
+            os.remove(message.media.path)
 
     async def _handleVkMessage(self, message):
         text = message.text.lower()

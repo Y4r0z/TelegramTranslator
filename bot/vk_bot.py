@@ -38,7 +38,6 @@ class VkBot(ChatBot):
                 media = await DocMessagesUploader(self.bot.api).upload(
                     message.media.name, message.media.path, peer_id = destination)
             await self.bot.api.messages.send(peer_id=destination, message=output, random_id = 0, attachment = media)
-            os.remove(message.media.path)
         else:
             if len(output) > 0:
                 await self.bot.api.messages.send(peer_id=destination, message=output, random_id = 0)
