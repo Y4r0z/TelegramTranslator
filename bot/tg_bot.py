@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from telethon import TelegramClient, events, utils
-from api_data import tg_api_id, tg_api_hash, tg_chats
+from api_data import tg_api_id, tg_api_hash
 from data_manager import DataManager
 from chat.tg_chat import TelegramChat
 from bot.bot import ChatBot
@@ -17,17 +17,21 @@ class TelegramBot(ChatBot):
         super().__init__(handler, TelegramClient('sessions/session', tg_api_id, tg_api_hash, loop = loop))
         self.bot.start()
         self._initHandlers()
-        for i in tg_chats:
-            task = None
-            task = TelegramChat.FromAny(self.bot, i)
-            chat = self.bot.loop.run_until_complete(task)
-            DataManager().tgChats.append(chat)
         print('Бот Телеграм загружен!')
 
     def _initHandlers(self):
         @self.bot.on(events.NewMessage)
         async def defaultHandler(event):
             await self.handler.handleMessage(event, self)
+    
+    def addChat(self, chat_id) -> TelegramChat:
+        if DataManager().tg_findById(chat_id):
+            return DataManager().tg_getById(chat_id)
+        task = TelegramChat.FromId(self.bot, chat_id)
+        chat = self.bot.loop.run_until_complete(task)
+        DataManager().tgChats.append(chat)
+        print(f'Чат {chat.name} добавлен в Tg.')
+        return chat
 
         
     

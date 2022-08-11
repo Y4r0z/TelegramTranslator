@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 from vkbottle.bot import Bot, Message, Blueprint
 from vkbottle.tools import DocMessagesUploader, PhotoMessageUploader, AudioUploader, VideoUploader, VoiceMessageUploader
-from api_data import vk_token, tg_api_id, tg_api_hash, tg_chats, vk_chats
+from api_data import vk_token, tg_api_id, tg_api_hash
 from chat.vk_chat import VkChat
 from messages.message import Message
 from messages.media import Media, MediaType
@@ -8,15 +9,12 @@ from data_manager import DataManager
 from bot.bot import ChatBot
 import platforms
 import os
-# -*- coding: utf-8 -*-
+
 class VkBot(ChatBot):
     Platform = platforms.Platform.vkontakte
     def __init__(self, loop, handler):
         super().__init__(handler, Bot(vk_token, loop = loop))
         self._initHandlers()
-        for i in vk_chats:
-            chat = self.bot.loop.run_until_complete(VkChat.FromId(self.bot.api, i))
-            DataManager().vkChats.append(chat)
         print('Бот ВК загружен!')
     
     def _initHandlers(self):
@@ -56,3 +54,14 @@ class VkBot(ChatBot):
             output.append(f'{message.author}: ')
         output.append(message.text)
         return ''.join(output)
+    
+
+    def addChat(self, chat_id) -> VkChat:
+        if DataManager().vk_findById(chat_id):
+            return DataManager().vk_getById(chat_id)
+        task = VkChat.FromId(self.bot.api, chat_id)
+        chat = self.bot.loop.run_until_complete(task)
+        DataManager().vkChats.append(chat)
+        print(f'Чат {chat.name} добавлен в VK.')
+        return chat
+    

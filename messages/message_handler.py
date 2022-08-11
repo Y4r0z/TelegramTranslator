@@ -63,12 +63,17 @@ class MessageHandler:
             return
         if not self.data.vk_findById(message.peer_id):
             return
-        if 'подпи' in text:
+        if 'подпи' in text and text[-2:] != 'ки':
             await self._vk_sub(message)
             print('=>',end='')
-        elif 'спис' in text:
+        elif 'отпи' in text:
+            await self._vk_unsub(message)
+            print('=>',end='')
+        elif 'спис' in text or ('подп' in text and text[-2:] == 'ки'):
             await self._vk_list(message)
             print('=>',end='')
+        elif 'стоп' in text:
+            await self._vk_stop()
         print('')
     
 
@@ -87,11 +92,13 @@ class MessageHandler:
         if len(splitted) < 2:
             await message.reply(f"Для подписки на канал, напишите его название. Если он есть в подписках бота, он будет добавлен.")
             return
-        chat = self.data.vk_getById(message.peer_id)
+        chat : VkChat = self.data.vk_getById(message.peer_id)
         chatName : str = ' '.join(splitted[1:])
         tgChat = None
         try:
             tgChat = await TelegramChat.FromAny(self.tg.bot, chatName)
+            if chat.isSubscribedTo(tgChat.id):
+                raise Exception('Этот канал уже добавлен в ваши подписки!')
         except Exception as e:
             print("Не получилось добавить канал в подписки:\n", e)
             await message.reply(str(e))
@@ -99,6 +106,31 @@ class MessageHandler:
         chat.subscriptions.append(tgChat)
         self.data.tgChats.append(tgChat)
         await message.reply('Подписка на канал оформлена. Теперь сообщения из него будут перенаправлятся сюда.')
+    
+    async def _vk_unsub(self, message):
+        text = message.text
+        splitted = text.split(' ')
+        if len(splitted) < 2:
+            await message.reply(f"Для отписки от канала, напишите его название.")
+            return
+        chat : VkChat = self.data.vk_getById(message.peer_id)
+        chatName : str = ' '.join(splitted[1:])
+        for i in chat.subscriptions:
+            if i.name.lower() != chatName.lower():
+                continue
+            tg_chat = i
+            chat.subscriptions.remove(tg_chat)
+            await message.reply(f'Канал {tg_chat.name} удален из подписок.')
+            for j in self.data.vkChats:
+                for k in j.subscriptions:
+                    if k == tg_chat:
+                        return
+            self.data.tgChats.remove(tg_chat)
+            return
+        await message.reply("Канал не найден.")
+
+
+        
 
     async def _vk_list(self, message):
         output = ['Список подписок:']
@@ -106,7 +138,9 @@ class MessageHandler:
         output.extend([i.name for i in chat.subscriptions])
         await message.reply('\n'.join(output))
 
-    
+    async def _vk_stop(self):
+        self.tg.bot.loop.stop()
+
     async def addSubcription(self, vkChat : VkChat, tgChatName : str):
         try:
             tgChat : TelegramChat = await TelegramChat.FromName(self.tg.bot, tgChatName)
@@ -132,6 +166,9 @@ class MessageHandler:
             output.append(f'{message.author}: ')
         output.append(message.text)
         return ''.join(output)
+    
+    async def stop(self):
+        print('Принудительная остановка')
 
 
         
