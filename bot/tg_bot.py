@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from telethon import TelegramClient, events, utils
-from api_data import tg_api_id, tg_api_hash
 from data_manager import DataManager
+from file_manager import FileManager
 from chat.tg_chat import TelegramChat
 from bot.bot import ChatBot
 import platforms
@@ -14,7 +14,8 @@ class TelegramBot(ChatBot):
             return
         if not os.path.exists('sessions/'):
             os.makedirs('sessions/')
-        super().__init__(handler, TelegramClient('sessions/session', tg_api_id, tg_api_hash, loop = loop))
+        api = FileManager().loadApi()
+        super().__init__(handler, TelegramClient('sessions/session', api['tg_id'], api['tg_hash'], loop = loop))
         self.bot.start()
         self._initHandlers()
         print('Бот Телеграм загружен!')

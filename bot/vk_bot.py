@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from vkbottle.bot import Bot, Message, Blueprint
 from vkbottle.tools import DocMessagesUploader, PhotoMessageUploader, AudioUploader, VideoUploader, VoiceMessageUploader
-from api_data import vk_token, tg_api_id, tg_api_hash
 from chat.vk_chat import VkChat
 from messages.message import Message
 from messages.media import Media, MediaType
 from data_manager import DataManager
+from file_manager import FileManager
 from bot.bot import ChatBot
 import platforms
 import os
@@ -13,7 +13,8 @@ import os
 class VkBot(ChatBot):
     Platform = platforms.Platform.vkontakte
     def __init__(self, loop, handler):
-        super().__init__(handler, Bot(vk_token, loop = loop))
+        api = FileManager().loadApi()
+        super().__init__(handler, Bot(api['vk_token'], loop = loop))
         self._initHandlers()
         print('Бот ВК загружен!')
     

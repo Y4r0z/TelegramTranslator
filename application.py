@@ -10,11 +10,15 @@ class Application:
     def __init__(self):
         self.loop = asyncio.get_event_loop()
         self.handler = MessageHandler()
+        
         #load api
-        #init api
-        #save api
+        if not FileManager().apiExists():
+            api = FileManager().inputApi()
+            FileManager().saveApi(api)
+
         self.tg = TelegramBot(self.loop, self.handler)
         self.vk = VkBot(self.loop, self.handler)
+
         # Load chats
         if FileManager().chatExists():
             chats = FileManager().loadChats()
@@ -29,7 +33,7 @@ class Application:
                 if DataManager().tg_findById(int(i['id'])):
                     continue
                 self.tg.addChat(i['id'])
-        ############
+
         print('Программа запущена')
         self.loop.create_task(self.vk.bot.run_polling())
     
