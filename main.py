@@ -6,11 +6,9 @@ import logging
 from data_manager import DataManager
 
 def main():
-    logger = logging.getLogger('telethon')
-    logger.propagate = False
-    logger = logging.getLogger('vkbottle')
-    logger.propagate = False
-    logging.basicConfig(level='critical')
+    logging.getLogger('telethon').propagate = False
+    logging.getLogger('vkbottle').propagate = False
+    logging.getLogger('asyncio').propagate = False
     app = Application()
     app.run()
     sys.exit()
