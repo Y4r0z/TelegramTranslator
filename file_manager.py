@@ -3,9 +3,12 @@ from data_manager import DataManager
 from messages.media import Media, MediaType
 import json
 import os
+import asyncio
 
 from telethon import TelegramClient
 from vkbottle import API
+from vkbottle.bot import Bot
+
 #Формат api dict{'vk_token':"", 'tg_id':0000, 'tg_hash':""}
 
 class FileManager:
@@ -112,20 +115,27 @@ class FileManager:
         while True:
             try:
                 token = input("Токен VK (vk_token): ")
-                API(token)
+                client = Bot(token)
+                task = client.api.groups.get_token_permissions()
+                asyncio.get_event_loop().run_until_complete(task)
+                del client
                 break
-            except:
+            except Exception:
                 print("Неверный токен!")
         return token
+
     def _inputApiTg(self):
          while True:
             try:
                 tg_id = int(input("Telegram api ID (tg_id): "))
                 tg_hash = input("Telegram api hash (tg_hash): ")
-                TelegramClient('sessions/session', tg_id, tg_hash)
+                client = TelegramClient('sessions/session', tg_id, tg_hash)
+                client.start()
+                client.disconnect()
+                del client
                 break
-            except:
-                print('Неверные данные Telegram API!')
+            except Exception as e:
+                print('Неверные данные Telegram API!', e)
          return (tg_id, tg_hash)
 
         

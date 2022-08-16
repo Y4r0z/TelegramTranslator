@@ -10,6 +10,7 @@ def main():
     logger.propagate = False
     logger = logging.getLogger('vkbottle')
     logger.propagate = False
+    logging.basicConfig(level='critical')
     app = Application()
     app.run()
     sys.exit()
