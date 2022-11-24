@@ -23,7 +23,12 @@ class Application:
         if FileManager().chatExists():
             chats = FileManager().loadChats()
             for i in chats['vk']:
-                vk_chat = self.vk.addChat(int(i['id']))
+                try:
+                    vk_chat = self.vk.addChat(int(i['id']))
+                except Exception as e:
+                    print("Can't add the chat!", i['id'])
+                    print(e)
+                    continue
                 subs = []
                 for j in i['subscriptions']:
                     if vk_chat.isSubscribedTo(int(j['id'])):
