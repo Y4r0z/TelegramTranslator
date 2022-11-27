@@ -125,7 +125,7 @@ dmypy.json
 
 api_data.py
 
-structs/
+structs_json/
 
 .vscode/
 
