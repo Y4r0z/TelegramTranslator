@@ -17,7 +17,5 @@ class VkBot(ChatBot):
             text = message.text
             if len(text) <= 0:
                 return
-            if text[0] == '/':
-                self.newCommand.emit(text[1:])
-            else:
-                self.newMessage.emit(text)
+            self.newMessage.emit(text)
+          

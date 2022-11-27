@@ -10,13 +10,9 @@ class Handler:
         self.tg = TgBot(os.environ.get("TG_TOKEN"), loop)
 
         self.vk.newMessage.connect(self.m)
-        self.vk.newCommand.connect(self.c)
         self.tg.newMessage.connect(self.m)
-        self.tg.newCommand.connect(self.c)
 
 
-    def c(self, cc):
-        print(cc)
     def m(self, mm):
         print(mm)
 
