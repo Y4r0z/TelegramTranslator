@@ -31,5 +31,5 @@ class TgBot(ChatBot):
         else:
             user = User(update.effective_user.full_name, int(update.effective_user.id))
         text = update.effective_message.text
-        self.newMessage.emit(Message(chat, user, text))
+        self.newMessage.emit(Message(chat, user, text, _id = update.effective_message.id))
 

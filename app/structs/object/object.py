@@ -8,3 +8,7 @@ class Object:
     
     def __eq__(self, o):
         return self.id == o.id
+
+    def strEqual(self, o):
+        cmp = str(o)
+        return cmp == str(self.id) or cmp == self.name or cmp ==  f'{self.name}#{self.id}' or cmp ==  f'#{self.id}'

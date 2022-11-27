@@ -3,7 +3,8 @@ from app.structs.object.channel import Channel
 from app.structs.object.user import User
 
 class Message:
-    def __init__(self, source : Channel, author : User, text : str, media = None):
+    def __init__(self, source : Channel, author : User, text : str, media = None, _id = None):
+        self.id = _id
         self.source = source
         self.author = author
         self.text = text
