@@ -21,5 +21,3 @@ class VkBot(ChatBot):
                 self.newCommand.emit(text[1:])
             else:
                 self.newMessage.emit(text)
-        
-        self.loop.create_task(self.bot.run_polling())

@@ -15,6 +15,7 @@ def main():
     load_dotenv(envPath) # os.environ.get()
     
     app = Application()
+    app.run()
 
 
 if __name__ == '__main__':

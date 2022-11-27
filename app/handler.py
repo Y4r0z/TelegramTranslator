@@ -4,15 +4,24 @@ import os
 
 class Handler:
     def __init__(self, loop):
-        vk = VkBot(os.environ.get("VK_TOKEN"), loop)
-        tg = TgBot(os.environ.get("TG_TOKEN"), loop)
-        vk.newMessage.connect(self.m)
-        vk.newCommand.connect(self.c)
-        tg.newMessage.connect(self.m)
-        tg.newCommand.connect(self.c)
+        self.loop = loop
+
+        self.vk = VkBot(os.environ.get("VK_TOKEN"), loop)
+        self.tg = TgBot(os.environ.get("TG_TOKEN"), loop)
+
+        self.vk.newMessage.connect(self.m)
+        self.vk.newCommand.connect(self.c)
+        self.tg.newMessage.connect(self.m)
+        self.tg.newCommand.connect(self.c)
 
 
     def c(self, cc):
-        print(f"cc: {cc} \n\n\n\n\n\n")
+        print(cc)
     def m(self, mm):
-        print(f"mm: {mm} \n\n\n\n\n\n")
+        print(mm)
+
+
+    def run(self):
+        self.loop.create_task(self.vk.bot.run_polling())
+        self.loop.create_task(self.tg.bot.run_polling())
+        #self.loop.run_forever() Не требуется, телегам и так это делает
