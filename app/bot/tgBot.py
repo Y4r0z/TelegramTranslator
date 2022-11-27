@@ -4,11 +4,12 @@ import logging as log
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, ChatMember, constants
 from telegram.ext import CommandHandler, ContextTypes, MessageHandler, filters, ApplicationBuilder, CallbackQueryHandler
 
+
 from app.bot.bot import ChatBot
 
-from app.stucts.message import Message
-from app.stucts.channel import Channel
-from app.stucts.user import User
+from app.structs.message import Message
+from app.structs.object.channel import Channel
+from app.structs.object.user import User
 
 class TgBot(ChatBot):
     def __init__(self, api, loop):
@@ -22,6 +23,8 @@ class TgBot(ChatBot):
        
     
     async def handleMessage(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        if update.effective_chat.type == constants.ChatType.PRIVATE:
+            return
         chat = Channel(update.effective_chat.title, int(update.effective_chat.id))
         if update.effective_user is None:
             user = chat
