@@ -69,5 +69,8 @@ class Handler:
             text = "Такой канал не найден. Проверьте название, id канала или попробуйте отправить сообщение в нужный вам канал, чтобы бот увидел его."
         future = self.vk.sendMessage(message.source.id, text)
         self.loop.create_task(future)
+    
+    def exit(self):
+        self.data.exit()
 
         

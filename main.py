@@ -2,7 +2,7 @@
 import os
 from dotenv import load_dotenv
 import logging as log 
-
+import atexit
 from app.application import Application
 
 def main():
@@ -15,6 +15,7 @@ def main():
     load_dotenv(envPath) # os.environ.get()
     
     app = Application()
+    atexit.register(app.exit)
     app.run()
 
 

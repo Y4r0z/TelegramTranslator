@@ -37,5 +37,5 @@ class VkBot(ChatBot):
         await self.bot.api.messages.send(random_id = random.getrandbits(64), peer_id = chatId, message = _message)
     
 
-    async def translateFrommTelegram(self, chat :MyChannel, message : MyMessage):
+    async def translateFrommTelegram(self, епСhat : MyChannel, message : MyMessage):
         pass

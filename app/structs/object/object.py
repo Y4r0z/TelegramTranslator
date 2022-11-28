@@ -12,3 +12,6 @@ class Object:
     def strEqual(self, o):
         cmp = str(o)
         return cmp == str(self.id) or cmp == self.name or cmp ==  f'{self.name}#{self.id}' or cmp ==  f'#{self.id}'
+    
+    def json(self):
+        return {'name':self.name, 'id':self.id}
