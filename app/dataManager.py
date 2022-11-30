@@ -29,6 +29,9 @@ class DataManager:
                 i.subscribers.pop(j)
                 return True
         return False
+
+    async def saveMedia(self, mes):
+        await self.fm.saveMedia(mes)
     
     def save(self):
         self.fm.saveChats(self.tgChats)

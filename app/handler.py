@@ -27,7 +27,6 @@ class Handler:
         #self.loop.run_forever() Не требуется, т.к. телегам и так это делает
 
     def telegramMessage(self, message : Message):
-        if not message.text or len(message.text) == 0: return
         #Так как список чатов нельзя получить, будем вручную сохранять все чаты, из которых нам написали
         if message.source not in self.data.tgChats:
             self.data.tgChats.append(message.source)
@@ -47,7 +46,7 @@ class Handler:
         for i in self.data.tgChats:
             if i != message.source: continue
             for j in i.subscribers:
-                future = self.vk.sendMessage(j.id, message.text)
+                future = self.vk.sendMessage(j.id, message)
                 self.loop.create_task(future)
 
 
