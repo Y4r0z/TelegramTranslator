@@ -4,14 +4,29 @@ from typing import Callable
 from asyncio import AbstractEventLoop
 import logging as log
 
+def cmpCommand(args, commands):
+    for i in commands:
+        if i in args:
+            return True
+    return False
+
 class Command:
-    def __init__(self, cmd : list[str], func : Callable, loop : AbstractEventLoop):
+    def __init__(self, cmd : list[str], func : Callable, loop : AbstractEventLoop, description : str = None):
         self.keys = cmd
         self.function = func
         self.loop = loop
+        self.description = description
 
     def execute(self, message : Message) -> None:
-        self.function(message, self.loop)
+        args = message.text.split(' ')[1:]
+        if cmpCommand(args, ['-h', '-help']):
+            coro = message.message.reply(self.description)
+            self.loop.create_task(coro)
+        elif cmpCommand(args, ['-v', '-variant', '-variants']):
+            coro = message.message.reply('Варианты команды:\n' + ' '.join(self.keys))
+            self.loop.create_task(coro)
+        else:
+            self.function(message, self.loop)
 
     def check(self, message : Message) -> bool: 
         cmd = message.text.split(' ')[0].lower()
@@ -24,11 +39,7 @@ class Command:
         return False
 
 
-class Commands:
-    СhatsList = ['/список', '/каналы', '/чаты', '/все', '/list', '/all', '/группы']
-    SubsList = ['/subs', '/подписки', '/cur', '/мои', '/my', '/текущие']
-    Susbcribe = ['/подписка', '/подпиши', '/подписаться', '/sub', '/subscribe', '/добавить', '/add', '/добавь']
-    Help = ['/help', '/помощь', '/помоги', '/хелп', '/команды']
+
 
 class CommandHandler:
     def __init__(self, loop : AbstractEventLoop):
@@ -42,8 +53,8 @@ class CommandHandler:
                 return
             
 
-    def addComand(self, cmd : list[str], func):
-        self.commands.append(Command(cmd, func, self.loop))
+    def addComand(self, cmd : list[str], func, desc):
+        self.commands.append(Command(cmd, func, self.loop, desc))
 
     def __getitem__(self, key):
         for i in self.commands:
@@ -53,13 +64,17 @@ class CommandHandler:
     
     def initCommands(self):
         self.addComand(['/список', '/каналы', '/чаты', '/все', '/list', '/all', '/группы'],
-            sendChats)
+            sendChats, "Выводит список доступных для прослушивания каналов. Чтобы канал был доступен в этом списке, "
+            + "в нем должно быть написано хотя бы одно сообщение при работе бота, чтобы он мог его обнаружить.")
         self.addComand(['/подписка', '/подпиши', '/подписаться', '/sub', '/subscribe', '/добавить', '/add', '/добавь'],
-            subscribeChat)
-        self.addComand(['/отдписка', '/отпиши', '/отписаться', '/unsub', '/unsubscribe', '/удалить', '/rem', '/удали', '/del', '/delete', '/remove'],
-            unsubscribeChat)
+            subscribeChat, 'Подписывает на определенный канал. Если вы подписаны на канал, то все сообщения их не го будут приходить и сюда.'
+            + '\nПример:\n/подписка Название канала\n/подписка ID_канала\n/подписка Название#ID')
+        self.addComand(['/отписка', '/отпиши', '/отписаться', '/unsub', '/unsubscribe', '/удалить', '/rem', '/удали', '/del', '/delete', '/remove'],
+            unsubscribeChat, 'Отписывает от канала или чата. Сообщения из него больше не будут пересылаться сюда. Вызов команды такой же, как и у /подписка')
         self.addComand(['/subs', '/подписки', '/cur', '/мои', '/my', '/текущие'], 
-            sendSubsList)
+            sendSubsList, 'Выводить список каналов, на которые вы подписаны.')
+        self.addComand(['/команды', '/помощь', '/help', '/хелп', '/помоги', '/помогите'],
+            sendHelp, 'Выводит список доступных команд.')
 
 
 
@@ -111,4 +126,7 @@ def unsubscribeChat(message : Message, loop : AbstractEventLoop):
     loop.create_task(coro)
 
 def sendHelp(message: Message, loop : AbstractEventLoop):
-    pass
+    text = 'Список доступных команд:\n/список\n/подписка\n/отписка\n/подписки\n/помощь'\
+        + '\n\nСписок аргументов:\n -v -variant : варианты команды.\n-h -help : описание команды.'
+    coro = message.message.reply(text)
+    loop.create_task(coro)
