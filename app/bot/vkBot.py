@@ -18,8 +18,6 @@ class VkBot(ChatBot):
 
         @self.bot.on.message()
         async def messageHandler(message : Message):
-            message.answer()
-            print(message.conversation_message_id, message.get_message_id(), message.message_id)
             _id = message.get_message_id()
             text = message.text      
             if len(text) <= 0: return
@@ -31,7 +29,7 @@ class VkBot(ChatBot):
             chatName = "VK"
             user = MyUser(userName, userId)
             chat = MyChannel(chatName, chatId)
-            self.newMessage.emit(MyMessage(chat, user, text, _id = _id))
+            self.newMessage.emit(MyMessage(chat, user, text, _id = _id, message=message))
         
     async def sendMessage(self, chatId, _message : str):
         await self.bot.api.messages.send(random_id = random.getrandbits(64), peer_id = chatId, message = _message)

@@ -4,7 +4,7 @@ from app.structs.object.user import User
 class Channel(Object):
     def __init__(self, name, _id):
         super().__init__(name, _id)
-        self.subscribers = []
+        self.subscribers : list[Channel] = []
     
     def append(self, o):
         if o not in self.subscribers:
