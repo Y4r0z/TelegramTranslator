@@ -35,6 +35,10 @@ class VkBot(ChatBot):
         
     async def sendMessage(self, chatId, message : MyMessage):
         media = await DataManager().fm.saveMedia(message)
+
+        author = f'Источник: {message.source}' + (f'. Отправитель: {message.author}' if message.source != message.author else '')
+        text = '<Без текста>' if not message.text or len(message.text) < 1 else message.text
+
         f = None
         if media is not None:
             try:
@@ -50,7 +54,8 @@ class VkBot(ChatBot):
         await self.bot.api.messages.send(
             random_id = random.getrandbits(64),
             peer_id = chatId, 
-            message =  '<Пусто>' if not message.text or len(message.text < 1) or not f else message.text, 
+            message = f'{author}. Сообщение:\n{text}', 
             attachment=f)
-        os.remove(media)
+        if media is not None:
+            os.remove(media)
     
