@@ -43,11 +43,11 @@ python3 main.py
 
 ### Пример работы
 
-![Пример](https://raw.githubusercontent.com/Y4r0z/TelegramTranslator/legacy/example/vk.png)
+![Пример](https://github.com/Y4r0z/TelegramTranslator/blob/legacy/example/vk.png)
 
 ### Со стороны Telegram
 
-![Пример](https://raw.githubusercontent.com/Y4r0z/TelegramTranslator/main/legacy/telegram.png)
+![Пример](https://github.com/Y4r0z/TelegramTranslator/blob/legacy/example/telegram.png)
 
 ## Лицензия
 [MIT](https://choosealicense.com/licenses/mit/)
