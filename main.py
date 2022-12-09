@@ -1,18 +1,22 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from application import Application
-import sys
-import logging
-from data_manager import DataManager
+import os
+from dotenv import load_dotenv
+import logging as log 
+import atexit
+from app.application import Application
 
 def main():
-    logging.getLogger('telethon').propagate = False
-    logging.getLogger('vkbottle').propagate = False
-    logging.getLogger('asyncio').propagate = False
-    app = Application()
-    app.run()
-    sys.exit()
+    envPath = os.path.join(os.path.dirname(__file__), '.env')
+    if not os.path.exists(envPath):
+        log.error("Отсутсвует .env")
+        print("Перед запуском программы создайте конфигурационный файл \".env\"!")
+        raise Exception("Не найден конфигурационный файл .env")
+        exit()
+    load_dotenv(envPath) # os.environ.get()
     
+    app = Application()
+    atexit.register(app.exit)
+    app.run()
 
 
 if __name__ == '__main__':
