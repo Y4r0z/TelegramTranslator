@@ -1,18 +1,19 @@
+import asyncio
+import random
+import os
+import logging as log
+from asyncio import AbstractEventLoop
 from vkbottle.bot import Bot, Message, Blueprint
 from vkbottle.tools import DocMessagesUploader, PhotoMessageUploader, AudioUploader, VideoUploader, VoiceMessageUploader
-import asyncio
-from asyncio import AbstractEventLoop
+
 from app.bot.bot import ChatBot
 from app.structs.message import Message as MyMessage
 from app.structs.object.channel import Channel as MyChannel
 from app.structs.object.user import User as MyUser
 from app.dataManager import  DataManager
-import random
-import os
-import logging as log
+from app.settings import Settings
 
 class VkBot(ChatBot):
-
     def __init__(self, api : str, loop : AbstractEventLoop):
         super().__init__() 
         self.loop = loop
@@ -35,10 +36,6 @@ class VkBot(ChatBot):
         
     async def sendMessage(self, chatId, message : MyMessage):
         media = await DataManager().fm.saveMedia(message)
-
-        author = f'Источник: {message.source}' + (f'. Отправитель: {message.author}' if message.source != message.author else '')
-        text = '<Без текста>' if not message.text or len(message.text) < 1 else message.text
-
         f = None
         if media is not None:
             try:
@@ -49,13 +46,42 @@ class VkBot(ChatBot):
                 else:
                     f = await DocMessagesUploader(self.bot.api).upload(media.split('/')[-1], media, peer_id=chatId)
             except Exception as e:
-                log.error('Не удалось отправить медиа: ' + str(e))
+                log.error('Не удалось загрузить медиа: ' + str(e))
                 f = None
         await self.bot.api.messages.send(
             random_id = random.getrandbits(64),
             peer_id = chatId, 
-            message = f'{author}. Сообщение:\n{text}', 
+            message = self.createText(message), 
             attachment=f)
         if media is not None:
             os.remove(media)
     
+    def createText(self, message) -> str:
+        print(DataManager().tgHistory, '\n\n\n\n')
+        #Если в истории недостаточно сообщений
+        if len(DataManager().tgHistory) < 2:
+            author = f'Источник: {message.source}' + \
+                (f'. Отправитель: {message.author}' if message.source != message.author else '')
+            text = '<Без текста>' if not message.text or len(message.text) < 1 else message.text
+            return f'{author}:\n{text}'
+        prev = DataManager().tgHistory[1]
+        diff = MyMessage.TimeDiff(message, prev)
+        print(diff, '\n\n\n')
+        #Если сообщения отправляются быстро, то автор не указывается
+        #Если сообщение из канала, то указывается только источник
+        source = '' if prev.source == message.source \
+            and diff <= Settings.MessageSourceTimeLimit else f'Источник - {message.source}'
+
+        author = '' if (prev.author == message.author and diff <= Settings.MessageAuthorTimeLimit)\
+            or message.source == message.author else f'Отправитель - {message.author}'
+
+        text = '<Без текста>' if not message.text or len(message.text) < 1 else message.text
+
+        if len(source) > 0 and len(author) > 0:       
+            return f'{source}. {author}:\n{text}'
+        elif len(source) > 0 and len(author) == 0:
+            return f'{source}:\n{text}'
+        elif len(source) == 0 and len(author) > 0:
+            return f'{author}:\n{text}'
+        else:
+            return text

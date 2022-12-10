@@ -1,6 +1,7 @@
 from app.structs.object.channel import Channel
 from app.filemanager import FileManager
 from app.structs.object.user import User
+from app.structs.message import Message
 
 class DataManager:
     _instance = None
@@ -10,6 +11,8 @@ class DataManager:
             self.tgChats = []
             self.fm = FileManager()
             self.tgChats : list[Channel] = [Channel.FromJson(i) for i in self.fm.loadChats()]
+            self.tgHistory : list[Message] = []
+            self.vkHistory : list[Message] = []
         return self._instance
     
     def subscribe(self, tgChat : str, vkChat : Channel):

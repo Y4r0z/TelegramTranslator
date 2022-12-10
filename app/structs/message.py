@@ -14,3 +14,8 @@ class Message:
     
     def __str__(self):
         return f'{self.author}: {self.text}'
+    
+    @staticmethod
+    def TimeDiff(mes1, mes2):
+        diff = (mes1.time - mes2.time).total_seconds()
+        return abs(diff)
