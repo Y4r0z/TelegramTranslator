@@ -8,7 +8,6 @@ class DataManager:
     def __new__(self):
         if self._instance is None:
             self._instance = super().__new__(self)
-            self.tgChats = []
             self.fm = FileManager()
             self.tgChats : list[Channel] = [Channel.FromJson(i) for i in self.fm.loadChats()]
             self.tgHistory : list[Message] = []

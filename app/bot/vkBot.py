@@ -57,7 +57,6 @@ class VkBot(ChatBot):
             os.remove(media)
     
     def createText(self, message) -> str:
-        print(DataManager().tgHistory, '\n\n\n\n')
         #Если в истории недостаточно сообщений
         if len(DataManager().tgHistory) < 2:
             author = f'Источник: {message.source}' + \
@@ -66,7 +65,6 @@ class VkBot(ChatBot):
             return f'{author}:\n{text}'
         prev = DataManager().tgHistory[1]
         diff = MyMessage.TimeDiff(message, prev)
-        print(diff, '\n\n\n')
         #Если сообщения отправляются быстро, то автор не указывается
         #Если сообщение из канала, то указывается только источник
         source = '' if prev.source == message.source \
